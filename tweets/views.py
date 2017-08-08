@@ -1,7 +1,15 @@
 from django.shortcuts import render
 
-def tweet_detail_view(request, id=1):
-    return render(request, 'tweets/detail_view.html', {})
+from .models import Tweet
+
+def tweet_detail_view(request, id):
+    context = {
+        'object': Tweet.objects.get(id=id)
+    }
+    return render(request, 'detail_view.html', context)
 
 def tweet_list_view(request):
-    return render(request, 'tweets/list_view.html', {})
+    context = {
+        'object_list': Tweet.objects.all()
+    }
+    return render(request, 'list_view.html', context)

@@ -1,0 +1,5 @@
+{% for tweet in object_list %}
+    {{ tweet.content }}<br/>
+    {{ tweet.user }}<br/>
+    {{ tweet.created_at | timesince }} ago<br/><br/>
+{% endfor %}
