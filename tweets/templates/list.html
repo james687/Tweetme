@@ -2,4 +2,6 @@
     {{ tweet.content }}<br/>
     {{ tweet.user }}<br/>
     {{ tweet.created_at | timesince }} ago<br/><br/>
+{% empty %}
+    <div>No tweets yet!</div>
 {% endfor %}
