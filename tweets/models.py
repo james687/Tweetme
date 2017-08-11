@@ -1,9 +1,11 @@
 from django.conf import settings
 from django.db import models
+from .validators import validate_f_word
+
 
 class Tweet(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    content = models.CharField(max_length=140)
+    content = models.CharField(max_length=140, validators=[validate_f_word])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
