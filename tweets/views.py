@@ -1,5 +1,6 @@
 from django.views.generic import ListView, DetailView, CreateView
 
+from .mixins import FormUserNeededMixin
 from .forms import TweetModelForm
 from .models import Tweet
 
@@ -14,7 +15,7 @@ class TweetDetail(DetailView):
     template_name = "detail.html"
 
 
-class TweetCreate(CreateView):
+class TweetCreate(FormUserNeededMixin, CreateView):
     form_class = TweetModelForm
     # if don't use form_class
     # model = Tweet
@@ -24,9 +25,6 @@ class TweetCreate(CreateView):
 
     template_name = "create.html"
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super(TweetCreate, self).form_valid(form)
 
 # function-based view for CreateView with user set to the current user
 
