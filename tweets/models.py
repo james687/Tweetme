@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
+
 from .validators import validate_f_word
 
 
@@ -11,3 +13,6 @@ class Tweet(models.Model):
 
     def __str__(self):
         return str(self.content)
+
+    def get_absolute_url(self):
+        return reverse('tweet:detail', kwargs={'pk': self.id})
