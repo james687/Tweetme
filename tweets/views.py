@@ -1,6 +1,7 @@
-from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
-from .mixins import FormUserNeededMixin
+from .mixins import FormUserNeededMixin, UserOwnerMixin
 from .forms import TweetModelForm
 from .models import Tweet
 
@@ -25,6 +26,12 @@ class TweetCreate(FormUserNeededMixin, CreateView):
 
     template_name = "create.html"
 
+
+class TweetUpdate(LoginRequiredMixin, UserOwnerMixin, UpdateView):
+    model = Tweet
+    form_class = TweetModelForm
+    template_name = "update.html"
+    login_url = '/admin/'
 
 # function-based view for CreateView with user set to the current user
 
