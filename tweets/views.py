@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -8,8 +9,14 @@ from .models import Tweet
 
 
 class TweetList(ListView):
-    model = Tweet
     template_name = "list.html"
+
+    def get_queryset(self):
+        qs = Tweet.objects.all()
+        query = self.request.GET.get('q');
+        if query:
+            qs = qs.filter(Q(content__icontains=query) | Q(user__username__icontains=query))
+        return qs
 
 
 class TweetDetail(DetailView):

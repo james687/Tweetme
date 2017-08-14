@@ -1,7 +1,17 @@
-{% for tweet in object_list %}
-    {{ tweet.content }}<br/>
-    {{ tweet.user }}<br/>
-    {{ tweet.created_at | timesince }} ago<br/><br/>
-{% empty %}
-    <div>No tweets yet!</div>
-{% endfor %}
+{% extends "base.html" %}
+{% block title %}Tweet List{% endblock %}
+{% block content %}
+    <p>{% include 'search_form.html' %}</p>
+
+    {% for tweet in object_list %}
+        {{ tweet.content }}<br/>
+        {{ tweet.user }}<br/>
+        {{ tweet.created_at | timesince }} ago<br/><br/>
+    {% empty %}
+        {% if request.GET.q %}
+            <div>No result!</div>
+        {% else %}
+            <div>No tweets yet!</div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
