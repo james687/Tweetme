@@ -13,10 +13,16 @@ class TweetList(ListView):
 
     def get_queryset(self):
         qs = Tweet.objects.all()
-        query = self.request.GET.get('q');
+        query = self.request.GET.get('q')
         if query:
             qs = qs.filter(Q(content__icontains=query) | Q(user__username__icontains=query))
         return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(TweetList, self).get_context_data(**kwargs)
+        context['create_form'] = TweetModelForm()
+        context['create_url'] = reverse_lazy('tweet:create')
+        return context
 
 
 class TweetDetail(DetailView):

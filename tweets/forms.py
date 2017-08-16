@@ -4,6 +4,13 @@ from .models import Tweet
 
 
 class TweetModelForm(forms.ModelForm):
+    # NOTE this property needs to be exactly the same name the `content` field below to override its default setting
+    content = forms.CharField(label='',
+                              widget=forms.Textarea(
+                                  attrs={'placeholder': "What's happening?",
+                                         "class": "form-control"}
+                              ))
+
     class Meta:
         model = Tweet
         fields = [

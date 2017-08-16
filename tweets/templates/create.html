@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Compose a Tweet{% endblock %}
 {% block content %}
-    {% include 'form.html' with form=form btn_title='Tweet' %}
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            {% include 'tweet_form.html' with form=form btn_title='Tweet' %}
+        </div>
+    </div>
 {% endblock %}
