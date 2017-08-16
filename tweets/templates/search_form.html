@@ -2,7 +2,10 @@
 this will do the same thing
 <form method="get" action="{% url 'tweet:list' %}">
 -->
-<form method="get" action="">
-    <input type="text" name="q" placeholder="Search" value="{{ request.GET.q }}"/>
-    <input type="submit" value="Search" />
+<form class="navbar-form navbar-left" method="get" action="">
+    <label class="sr-only" for="searchInput">Search</label>
+    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+         <input class="form-control" type="text" name="q" id="searchInput" placeholder="Search Tweetme" value="{{ request.GET.q }}"/>
+    </div>
+    <input type="submit" class="btn btn-primary" value="Go" />
 </form>

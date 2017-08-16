@@ -1,12 +1,21 @@
 {% extends "base.html" %}
 {% block title %}Tweet List{% endblock %}
 {% block content %}
-    <p>{% include 'search_form.html' %}</p>
-
     {% for tweet in object_list %}
-        {{ tweet.content }}<br/>
-        {{ tweet.user }}<br/>
-        {{ tweet.created_at | timesince }} ago<br/><br/>
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-2">
+                <div class="media">
+                    {% if tweet.image_url %} <!-- 20170815 no image_url now -->
+                        <img class="d-flex mr-3" src="{{ tweet.image_url }}" />
+                    {% endif %}
+                    <div class="media-body">
+                        {{ tweet.content }}<br/>
+                        via {{ tweet.user }} | {{ tweet.created_at | timesince }} ago | <a href="{{ tweet.get_absolute_url }}">View</a> <br/>
+                    </div>
+                </div>
+                <hr />
+            </div>
+        </div>
     {% empty %}
         {% if request.GET.q %}
             <div>No result!</div>

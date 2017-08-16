@@ -1,3 +1,7 @@
-{{ object.content }}<br/>
-{{ object.user }}<br/>
-{{ object.created_at | timesince }} ago
+{% extends "base.html" %}
+{% block title %}Tweet{% endblock %}
+{% block content %}
+    {{ object.content }}<br/>
+    {{ object.user }}<br/>
+    {{ object.created_at | timesince }} ago
+{% endblock %}
