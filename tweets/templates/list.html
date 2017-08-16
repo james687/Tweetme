@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Tweet List{% endblock %}
 {% block content %}
-    {% for tweet in object_list %}
-        <div class="row">
-            <div class="col-sm-8 col-sm-offset-2">
+    <div class="row">
+        <div class="col-sm-3">
+            <h1>{{ request.user }}</h1>
+        </div>
+        <div class="col-sm-9">
+            {% for tweet in object_list %}
                 <div class="media">
                     {% if tweet.image_url %} <!-- 20170815 no image_url now -->
                         <img class="d-flex mr-3" src="{{ tweet.image_url }}" />
@@ -14,13 +17,13 @@
                     </div>
                 </div>
                 <hr />
-            </div>
+            {% empty %}
+                {% if request.GET.q %}
+                    <div>No result!</div>
+                {% else %}
+                    <div>No tweets yet!</div>
+                {% endif %}
+            {% endfor %}
         </div>
-    {% empty %}
-        {% if request.GET.q %}
-            <div>No result!</div>
-        {% else %}
-            <div>No tweets yet!</div>
-        {% endif %}
-    {% endfor %}
+    </div>
 {% endblock %}
