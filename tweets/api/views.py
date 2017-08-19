@@ -12,7 +12,7 @@ class TweetListAPIView(ListAPIView):
     serializer_class = TweetModelSerializer
 
     def get_queryset(self):
-        qs = Tweet.objects.all()
+        qs = Tweet.objects.all().order_by('-created_at')
         query = self.request.GET.get('q')
         if query:
             qs = qs.filter(Q(content__icontains=query) | Q(user__username__icontains=query))
