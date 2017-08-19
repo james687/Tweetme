@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 {% block title %}Tweet List{% endblock %}
 {% block script %}
+<style>
+    #tweetCharsLeft {
+        margin-left: 10px;
+    }
+    .grey-color {
+        color: darkgray;
+    }
+    .red-color {
+        color: red;
+    }
+</style>
 <script>
     function clearForm(formId) {
         $(':input','#' + formId)
@@ -38,21 +49,61 @@
         });
     }
 
+    /**
+     * change color and the count number of how many chars left
+     * color: chars left < 0 -> red
+     *                   = 0 -> gray
+     *                   > 0 -> black(original color)
+     * @param content - tweet content
+     * @param charCountLeft
+     */
+    function setUpTweetCharsLeft(content, charCountLeft) {
+        var charsLeftSpan = $('#tweetCharsLeft');
+        charsLeftSpan.text(charCountLeft);
+        if (charCountLeft == 0) {
+            charsLeftSpan.removeClass('red-color');
+            charsLeftSpan.addClass('grey-color');
+        } else if (charCountLeft < 0) {
+            charsLeftSpan.removeClass('grey-color');
+            charsLeftSpan.addClass('red-color');
+        } else {
+            charsLeftSpan.removeClass('grey-color');
+            charsLeftSpan.removeClass('red-color');
+        }
+    }
+
+    var tweetCharsLimit = 140;
     $(document).ready(function() {
-        $('#tweet-form').submit(function (event) {
+        var tweetForm = $('#tweet-form');
+
+        var charCountLeft = 140;
+        tweetForm.append("<span id='tweetCharsLeft'>" + charCountLeft + "</span><span> Left</span>");
+        var textArea = tweetForm.find('textarea')[0];
+        tweetForm.keyup(function (event) {
+            var content = $(textArea).val();
+            charCountLeft = tweetCharsLimit - content.length;
+            setUpTweetCharsLeft(content, charCountLeft);
+        });
+
+        tweetForm.submit(function (event) {
             event.preventDefault();
+            if (charCountLeft < 0) {
+                // TODO show error message of tweet too long
+                return;
+            }
             $.ajax({
                 'url': '/api/tweets/create/',
                 'method': 'POST',
                 'data': $(this).serialize(),
                 'success': function (data) {
                     reloadTweets();
+                    $('#tweetCharsLeft').text(tweetCharsLimit);  // reset it
                 },
                 'error': function (data) {
                     console.log('error:');
                     console.log(data);
                 }
-        });
+            });
         })
     });
 </script>
