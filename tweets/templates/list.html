@@ -1,22 +1,78 @@
 {% extends "base.html" %}
 {% block title %}Tweet List{% endblock %}
+{% block script %}
+<script>
+    function clearForm(formId) {
+        $(':input','#' + formId)
+          .not(':button, :submit, :reset, :hidden')
+          .val('')
+          .removeAttr('checked')
+          .removeAttr('selected');
+    }
+
+    function reloadTweets() {
+        $.ajax({
+            'url': '/api/tweets/',
+            'method': 'GET',
+            'success': function (data) {
+                clearForm('tweet-form');
+                $('#tweet-container').empty();
+                $.each(data, function (key, tweet) {
+                    var tweetContent = tweet.content;
+                    var tweetUser = tweet.user;
+                    $('#tweet-container').append(
+                        "<div class=\"media\">" +
+                            "<div class=\"media-body\">" +
+                                tweetContent + "<br />" +
+                                "via " + tweetUser.username + " | " + tweet.time_since + " ago" + " | " + "<a href='" + tweet.url + "'>View</a>" + "<br />" +
+                            "</div>" +
+                        "</div>" +
+                        "<hr />"
+                    );
+                });
+            },
+            'error': function (data) {
+                console.log('error:');
+                console.log(data);
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        $('#tweet-form').submit(function (event) {
+            event.preventDefault();
+            $.ajax({
+                'url': '/api/tweets/create/',
+                'method': 'POST',
+                'data': $(this).serialize(),
+                'success': function (data) {
+                    reloadTweets();
+                },
+                'error': function (data) {
+                    console.log('error:');
+                    console.log(data);
+                }
+        });
+        })
+    });
+</script>
+{% endblock %}
 {% block content %}
-    <div class="row">
-        <div class="col-sm-3">
-            <h1>{{ request.user }}</h1>
-        </div>
-        <div class="col-sm-9">
-            {% if not request.GET.q %}
-                <div class="row">
-                    {% include 'tweet_form.html' with form=create_form action_url=create_url btn_title='Tweet' %}
-                </div>
-                <hr />
-            {% endif %}
+<div class="row">
+    <div class="col-sm-3">
+        <h1>{{ request.user }}</h1>
+    </div>
+    <div class="col-sm-9">
+        {% if not request.GET.q %}
+            <div class="row">
+                {% include 'tweet_form.html' with form=create_form action_url=create_url btn_title='Tweet' form_id='tweet-form' %}
+            </div>
+            <hr />
+        {% endif %}
+        <div id="tweet-container">
+            <!-- the initial tweet list rendering and search results -->
             {% for tweet in object_list %}
                 <div class="media">
-                    {% if tweet.image_url %} <!-- 20170815 no image_url now -->
-                        <img class="d-flex mr-3" src="{{ tweet.image_url }}" />
-                    {% endif %}
                     <div class="media-body">
                         {{ tweet.content }}<br/>
                         via {{ tweet.user }} | {{ tweet.created_at | timesince }} ago | <a href="{{ tweet.get_absolute_url }}">View</a> <br/>
@@ -32,4 +88,5 @@
             {% endfor %}
         </div>
     </div>
+</div>
 {% endblock %}
