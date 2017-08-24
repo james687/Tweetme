@@ -4,9 +4,26 @@
     <div class="row">
         <div class="col-sm-3">
             <h1>{{ object.username }}</h1>
+            <p>Followers: {{ object.followed_by.count }}</p>
+            <p>Following: {{ object.profile.following.count }}</p>
         </div>
         <div class="col-sm-9">
+            <h1>Tweets</h1>
             {% include 'tweet_list.html' with tweets=object.tweet_set.all %}
+            <h1>Followed By <small>{{ object.followed_by.count }}</small></h1>
+            {% for user_profile in object.followed_by.all %}
+                <a href="{{ user_profile.get_absolute_url }}">{{ user_profile.user.username }}</a><br />
+            {% empty %}
+                <h4>Not followed by any users.</h4>
+            {% endfor %}
+            <hr />
+            <h1>Following <small>{{ object.profile.following.count }}</small></h1>
+            {% for user in object.profile.following.all %}
+                <a href="{{ user.profile.get_absolute_url }}">{{ user.username }}</a><br />
+            {% empty %}
+                <h4>Not following any users.</h4>
+            {% endfor %}
+            <hr />
         </div>
     </div>
 {% endblock %}
