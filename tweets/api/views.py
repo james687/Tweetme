@@ -5,11 +5,14 @@ from rest_framework import permissions
 from rest_framework.generics import ListAPIView, CreateAPIView
 
 from tweets.models import Tweet
+
+from .pagination import StandardResultsPagination
 from .serializers import TweetModelSerializer
 
 
 class TweetListAPIView(ListAPIView):
     serializer_class = TweetModelSerializer
+    pagination_class = StandardResultsPagination
 
     def get_queryset(self):
         qs = Tweet.objects.all().order_by('-created_at')

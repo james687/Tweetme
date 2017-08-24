@@ -21,32 +21,46 @@
           .removeAttr('selected');
     }
 
-    function reloadTweets() {
-        $.ajax({
-            'url': '/api/tweets/',
-            'method': 'GET',
-            'success': function (data) {
-                clearForm('tweet-form');
-                $('#tweet-container').empty();
-                $.each(data, function (key, tweet) {
-                    var tweetContent = tweet.content;
-                    var tweetUser = tweet.user;
-                    $('#tweet-container').append(
-                        "<div class=\"media\">" +
-                            "<div class=\"media-body\">" +
-                                tweetContent + "<br />" +
-                                "via " + tweetUser.username + " | " + tweet.time_since + " ago" + " | " + "<a href='" + tweet.url + "'>View</a>" + "<br />" +
+    /**
+     * @return function to load tweets which takes a boolean argument: reload
+     */
+    function getLoadTweets() {
+        var tweetsUrl = '/api/tweets/';
+
+        return function (reload) {
+            if (reload) tweetsUrl = '/api/tweets/';
+            $.ajax({
+                'url': tweetsUrl,
+                'method': 'GET',
+                'success': function (data) {
+                    tweetsUrl = data.next;
+                    var tweets = data.results;
+                    // toggle load more link
+                    if (!tweetsUrl || tweets.length == data.count) $('#loadMore').css('display', 'none');
+                    else $('#loadMore').css('display', '');
+
+                    clearForm('tweet-form');
+                    if (reload) $('#tweet-container').empty();
+                    $.each(tweets, function (key, tweet) {
+                        var tweetContent = tweet.content;
+                        var tweetUser = tweet.user;
+                        $('#tweet-container').append(
+                            "<div class=\"media\">" +
+                                "<div class=\"media-body\">" +
+                                    tweetContent + "<br />" +
+                                    "via " + tweetUser.username + " | " + tweet.time_since + " ago" + " | " + "<a href='" + tweet.url + "'>View</a>" + "<br />" +
+                                "</div>" +
                             "</div>" +
-                        "</div>" +
-                        "<hr />"
-                    );
-                });
-            },
-            'error': function (data) {
-                console.log('error:');
-                console.log(data);
-            }
-        });
+                            "<hr />"
+                        );
+                    });
+                },
+                'error': function (data) {
+                    console.log('error:');
+                    console.log(data);
+                }
+            });
+        };
     }
 
     /**
@@ -72,10 +86,10 @@
         }
     }
 
-    var tweetCharsLimit = 140;
     $(document).ready(function() {
         var tweetForm = $('#tweet-form');
 
+        var tweetCharsLimit = 140;
         var charCountLeft = 140;
         tweetForm.append("<span id='tweetCharsLeft'>" + charCountLeft + "</span><span> Left</span>");
         var textArea = tweetForm.find('textarea')[0];
@@ -85,6 +99,7 @@
             setUpTweetCharsLeft(content, charCountLeft);
         });
 
+        var loadTweets = getLoadTweets();
         tweetForm.submit(function (event) {
             event.preventDefault();
             if (charCountLeft < 0) {
@@ -96,7 +111,7 @@
                 'method': 'POST',
                 'data': $(this).serialize(),
                 'success': function (data) {
-                    reloadTweets();
+                    loadTweets(true);
                     $('#tweetCharsLeft').text(tweetCharsLimit);  // reset it
                 },
                 'error': function (data) {
@@ -104,7 +119,12 @@
                     console.log(data);
                 }
             });
-        })
+        });
+
+        $('#loadMore').click(function (event) {
+            event.preventDefault();
+            loadTweets(false);
+        });
     });
 </script>
 {% endblock %}
@@ -138,6 +158,7 @@
                 {% endif %}
             {% endfor %}
         </div>
+        <a href="#" id="loadMore" style="display: none">Load More Tweets</a>
     </div>
 </div>
 {% endblock %}
