@@ -24,4 +24,4 @@ class TweetModelTestCase(TestCase):
             user=User.objects.first(),
             content='whatever~~'
         )
-        self.assertEqual(tweet.get_absolute_url(), reverse('tweet:detail', kwargs={'pk': tweet.id}))
+        self.assertEqual(tweet.get_absolute_url(), reverse('tweets:detail', kwargs={'pk': tweet.id}))

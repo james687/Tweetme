@@ -142,21 +142,7 @@
         {% endif %}
         <div id="tweet-container">
             <!-- the initial tweet list rendering and search results -->
-            {% for tweet in object_list %}
-                <div class="media">
-                    <div class="media-body">
-                        {{ tweet.content }}<br/>
-                        via {{ tweet.user }} | {{ tweet.created_at | timesince }} ago | <a href="{{ tweet.get_absolute_url }}">View</a> <br/>
-                    </div>
-                </div>
-                <hr />
-            {% empty %}
-                {% if request.GET.q %}
-                    <div>No result!</div>
-                {% else %}
-                    <div>No tweets yet!</div>
-                {% endif %}
-            {% endfor %}
+            {% include 'tweet_list.html' with tweets=object_list %}
         </div>
         <a href="#" id="loadMore" style="display: none">Load More Tweets</a>
     </div>

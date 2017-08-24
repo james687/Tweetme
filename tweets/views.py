@@ -9,7 +9,7 @@ from .models import Tweet
 
 
 class TweetList(ListView):
-    template_name = "list.html"
+    template_name = "tweets/home.html"
 
     def get_queryset(self):
         qs = Tweet.objects.all().order_by('-created_at')
@@ -21,13 +21,13 @@ class TweetList(ListView):
     def get_context_data(self, **kwargs):
         context = super(TweetList, self).get_context_data(**kwargs)
         context['create_form'] = TweetModelForm()
-        context['create_url'] = reverse_lazy('tweet:create')
+        context['create_url'] = reverse_lazy('tweets:create')
         return context
 
 
 class TweetDetail(DetailView):
     model = Tweet
-    template_name = "detail.html"
+    template_name = "tweets/detail.html"
 
 
 class TweetCreate(FormUserNeededMixin, CreateView):
@@ -38,20 +38,20 @@ class TweetCreate(FormUserNeededMixin, CreateView):
     #     'content'
     # ]
 
-    template_name = "create.html"
+    template_name = "tweets/create.html"
 
 
 class TweetUpdate(LoginRequiredMixin, UserOwnerMixin, UpdateView):
     model = Tweet
     form_class = TweetModelForm
-    template_name = "update.html"
+    template_name = "tweets/update.html"
     login_url = '/admin/'
 
 
 class TweetDelete(LoginRequiredMixin, DeleteView):
     model = Tweet
-    template_name = 'delete_confirm.html'
-    success_url = reverse_lazy('tweet:list')
+    template_name = 'tweets/delete_confirm.html'
+    success_url = reverse_lazy('tweets:list')
     # success_url = '/tweets/' # this will do the same thing as above
 
 # function-based view for CreateView with user set to the current user
@@ -62,7 +62,7 @@ class TweetDelete(LoginRequiredMixin, DeleteView):
 #         instance = form.save(commit=False)
 #         instance.user = request.user
 #         instance.save()
-#     return render(request, 'create.html', {'form': form})
+#     return render(request, 'tweets/create.html', {'form': form})
 
 # function-based views of list and detail views
 
@@ -70,10 +70,10 @@ class TweetDelete(LoginRequiredMixin, DeleteView):
 #     context = {
 #         'object': Tweet.objects.get(id=id)
 #     }
-#     return render(request, 'detail.html', context)
+#     return render(request, 'tweets/detail.html', context)
 #
 # def tweet_list_view(request):
 #     context = {
 #         'object_list': Tweet.objects.all()
 #     }
-#     return render(request, 'list.html', context)
+#     return render(request, 'tweets/home.html', context)

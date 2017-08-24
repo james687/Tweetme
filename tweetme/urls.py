@@ -24,8 +24,9 @@ from tweets.views import TweetList
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', TweetList.as_view(), name='home'),
-    url(r'^tweets/', include('tweets.urls', namespace='tweet')),
+    url(r'^tweets/', include('tweets.urls', namespace='tweets')),
     url(r'^api/tweets/', include('tweets.api.urls', namespace='tweet-api')),
+    url(r'^users/', include('accounts.urls', namespace='users')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

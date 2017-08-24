@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}{{ object.username }}{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-3">
+            <h1>{{ object.username }}</h1>
+        </div>
+        <div class="col-sm-9">
+            {% include 'tweet_list.html' with tweets=object.tweet_set.all %}
+        </div>
+    </div>
+{% endblock %}
