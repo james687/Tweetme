@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'^$', TweetList.as_view(), name='home'),
     url(r'^tweets/', include('tweets.urls', namespace='tweets')),
     url(r'^api/tweets/', include('tweets.api.urls', namespace='tweet-api')),
-    url(r'^users/', include('accounts.urls', namespace='users')),
+    url(r'^', include('users.urls', namespace='users')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

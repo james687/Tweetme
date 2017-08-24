@@ -7,7 +7,7 @@ User = get_user_model()
 
 class UserDetailView(DetailView):
     model = User
-    template_name = 'accounts/detail.html'
+    template_name = 'users/detail.html'
 
     def get_object(self, queryset=None):
         return get_object_or_404(User, username__iexact=self.kwargs.get('username'))
