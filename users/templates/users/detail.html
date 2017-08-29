@@ -5,7 +5,7 @@
         <div class="col-sm-3">
             <h1>{{ object.username }}</h1>
             <p>Followers: {{ object.followed_by.count }}</p>
-            <p>Following: {{ object.profile.following.count }}</p>
+            <p>Following: {{ object.profile.following.count|default:0 }}</p>
         </div>
         <div class="col-sm-9">
             <h1>Tweets</h1>
@@ -17,7 +17,7 @@
                 <h4>Not followed by any users.</h4>
             {% endfor %}
             <hr />
-            <h1>Following <small>{{ object.profile.following.count }}</small></h1>
+            <h1>Following <small>{{ object.profile.following.count|default:0 }}</small></h1>
             {% for user in object.profile.following.all %}
                 <a href="{{ user.profile.get_absolute_url }}">{{ user.username }}</a><br />
             {% empty %}
