@@ -1,6 +1,6 @@
 from .base import *
-from .production import *
-try:
+
+if on_heroku:
+    from .production import *
+else:
     from .local import *
-except:
-    pass
