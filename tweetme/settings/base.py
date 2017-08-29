@@ -16,12 +16,8 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 
-if 'DATABASE_URL' in os.environ:  # in Heroku's environment
-    on_heroku = True
-    from .production import PROJECT_ROOT
-else:
-    on_heroku = False
-    from .local import PROJECT_ROOT
+# Build paths inside the project like this: os.path.join(PROJECT_ROOT, ...)
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Application definition
 

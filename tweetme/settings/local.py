@@ -1,7 +1,5 @@
 import os
-
-# Build paths inside the project like this: os.path.join(PROJECT_ROOT, ...)
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from .base import PROJECT_ROOT
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ')_3sp#ux^9bas4!u*krx*m@f_wwf7*u^t1_ivsl@x$5sew0rp*'
