@@ -9,3 +9,4 @@ Markdown==2.6.9
 psycopg2==2.7.3.1
 six==1.10.0
 static3==0.7.0
+whitenoise==3.3.0
