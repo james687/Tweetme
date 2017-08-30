@@ -45,7 +45,6 @@ class TweetUpdate(LoginRequiredMixin, UserOwnerMixin, UpdateView):
     model = Tweet
     form_class = TweetModelForm
     template_name = "tweets/update.html"
-    login_url = '/admin/'
 
 
 class TweetDelete(LoginRequiredMixin, DeleteView):

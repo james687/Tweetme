@@ -17,6 +17,8 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(PROJECT_ROOT, ...)
+from django.urls import reverse_lazy
+
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Application definition
@@ -113,6 +115,8 @@ STATICFILES_DIRS = (
 )
 
 
-# HTTPS
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+# Others
+
+LOGIN_URL = reverse_lazy('login')
+LOGIN_REDIRECT_URL = reverse_lazy('home')
+LOGOUT_REDIRECT_URL = reverse_lazy('home')

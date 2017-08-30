@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}{{ object.username }}{% endblock %}
+{% block title %}{{ object.username }}{{ block.super }}{% endblock %}
 {% block content %}
     <div class="row">
         <div class="col-sm-3">

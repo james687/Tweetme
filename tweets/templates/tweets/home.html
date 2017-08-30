@@ -1,5 +1,30 @@
 {% extends "base.html" %}
-{% block title %}{{ request.user }}{% endblock %}
+{% block title %}Tweetme{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-sm-3">
+        {% if user.is_authenticated %}
+            <h1>{{ user }}</h1>
+        {% else %}
+            <h1><a href="{% url 'login' %}">Login</a></h1>
+            <h1><a href="{% url 'register' %}">Register</a></h1>
+        {% endif %}
+    </div>
+    <div class="col-sm-9">
+        {% if not request.GET.q %}
+            <div class="row">
+                {% include 'tweet_form.html' with form=create_form action_url=create_url btn_title='Tweet' form_id='tweet-form' %}
+            </div>
+            <hr />
+        {% endif %}
+        <div id="tweet-container">
+            <!-- the initial tweet list rendering and search results -->
+            {% include 'tweet_list.html' with tweets=object_list %}
+        </div>
+        <a href="#" id="loadMore" style="display: none">Load More Tweets</a>
+    </div>
+</div>
+{% endblock %}
 {% block script %}
 <style>
     #tweetCharsLeft {
@@ -128,23 +153,4 @@
     });
 </script>
 {% endblock %}
-{% block content %}
-<div class="row">
-    <div class="col-sm-3">
-        <h1>{{ request.user }}</h1>
-    </div>
-    <div class="col-sm-9">
-        {% if not request.GET.q %}
-            <div class="row">
-                {% include 'tweet_form.html' with form=create_form action_url=create_url btn_title='Tweet' form_id='tweet-form' %}
-            </div>
-            <hr />
-        {% endif %}
-        <div id="tweet-container">
-            <!-- the initial tweet list rendering and search results -->
-            {% include 'tweet_list.html' with tweets=object_list %}
-        </div>
-        <a href="#" id="loadMore" style="display: none">Load More Tweets</a>
-    </div>
-</div>
-{% endblock %}
+

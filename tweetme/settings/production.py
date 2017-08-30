@@ -30,3 +30,9 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static-serve')
 # https://warehouse.python.org/project/whitenoise/
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+
+# HTTPS
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
