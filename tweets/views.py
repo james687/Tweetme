@@ -8,6 +8,8 @@ from .forms import TweetModelForm
 from .models import Tweet
 
 
+# 20170830 Actually this is only for search now, the listing is done by Ajax.
+# TODO revise it to only serve search purpose
 class TweetList(ListView):
     template_name = "tweets/home.html"
 

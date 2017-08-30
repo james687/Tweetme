@@ -21,7 +21,7 @@
             <!-- the initial tweet list rendering and search results -->
             {% include 'tweet_list.html' with tweets=object_list %}
         </div>
-        <a href="#" id="loadMore" style="display: none">Load More Tweets</a>
+        <button id="loadMore" class="btn btn-info" style="display: none;">Load More</button>
     </div>
 </div>
 {% endblock %}
@@ -35,6 +35,12 @@
     }
     .red-color {
         color: red;
+    }
+    #loadMore {
+        margin-bottom: 20px;
+    }
+    a.btn {
+        margin: 15px;
     }
 </style>
 <script>
@@ -73,7 +79,8 @@
                             "<div class=\"media\">" +
                                 "<div class=\"media-body\">" +
                                     tweetContent + "<br />" +
-                                    "via " + "<a href='" + tweetUser.url + "'>" + tweetUser.username + "</a> | " + tweet.time_since + " ago" + " | " + "<a href='" + tweet.url + "'>View</a>" + "<br />" +
+                                    "via " + "<a href='" + tweetUser.url + "'>" + tweetUser.username + "</a> | " + tweet.time_since + " ago" +
+                                    "<a class='btn btn-default' href='" + tweet.url + "'>View</a>" + "<br />" +
                                 "</div>" +
                             "</div>" +
                             "<hr />"
@@ -145,6 +152,8 @@
                 }
             });
         });
+
+        loadTweets(true);
 
         $('#loadMore').click(function (event) {
             event.preventDefault();

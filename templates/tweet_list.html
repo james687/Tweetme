@@ -2,7 +2,7 @@
     <div class="media">
         <div class="media-body">
             {{ tweet.content }}<br/>
-            via {{ tweet.user }} | {{ tweet.created_at | timesince }} ago | <a href="{{ tweet.get_absolute_url }}">View</a> <br/>
+            via {{ tweet.user }} | {{ tweet.created_at | timesince }} ago<a class="btn btn-default" style="margin: 15px;" href="{{ tweet.get_absolute_url }}">View</a> <br/>
         </div>
     </div>
     <hr />
