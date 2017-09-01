@@ -3,11 +3,20 @@
 {% block content %}
     <div class="row">
         <div class="col-sm-3">
-            <h1>{{ object.user }}</h1>
+            {% include 'users/user_info.html' with user=object.user %}
         </div>
         <div class="col-sm-9">
-            {{ object.content }}<br/>
-            {{ object.created_at | timesince }} ago
+            <p id="tweet-display"></p>
+            <p>{{ object.created_at | timesince }} ago</p>
         </div>
     </div>
+    <span id="tweet-content" style="display: none;">{{ object.content }}</span>
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function () {
+        var tweetContent = $('#tweet-content').text().replace(/(?:\r\n|\r|\n)/g, '<br />'); // replace all "\n"s with "<br />"s
+        $('#tweet-display').append(tweetContent);
+    });
+</script>
 {% endblock %}

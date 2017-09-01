@@ -18,7 +18,8 @@ class UserDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(UserDetailView, self).get_context_data(**kwargs)
-        context['is_following'] = UserProfile.custom_objects.is_following(self.request.user, self.get_object())
+        if self.request.user.is_authenticated():
+            context['is_following'] = UserProfile.custom_objects.is_following(self.request.user, self.get_object())
         return context
 
 

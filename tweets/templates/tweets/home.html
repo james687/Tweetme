@@ -4,10 +4,12 @@
 <div class="row">
     <div class="col-sm-3">
         {% if request.user.is_authenticated %}
-            <h1>{{ request.user }}</h1>
+            {% include 'users/user_info.html' with user=request.user showFollowToggle=False %}
         {% else %}
-            <h1><a href="{% url 'login' %}">Login</a></h1>
-            <h1><a href="{% url 'register' %}">Register</a></h1>
+            <h3><span class="label label-default">Who to follow</span></h3>
+            {% for user in users %}
+                {% include 'users/user_info.html' with user=user showFollowToggle=True %}
+            {% endfor %}
         {% endif %}
     </div>
     <div class="col-sm-9">
@@ -18,14 +20,14 @@
             <hr />
         {% endif %}
         <div id="tweet-container">
-            <!-- the initial tweet list rendering and search results -->
-            {% include 'tweet_list.html' with tweets=object_list %}
+            <h4>Loading...</h4>
         </div>
         <button id="loadMore" class="btn btn-info" style="display: none;">Load More</button>
     </div>
 </div>
 {% endblock %}
 {% block script %}
+{{ block.super }}
 <style>
     #tweetCharsLeft {
         margin-left: 10px;
@@ -36,65 +38,8 @@
     .red-color {
         color: red;
     }
-    #loadMore {
-        margin-bottom: 20px;
-    }
-    a.btn {
-        margin: 15px;
-    }
 </style>
 <script>
-    function clearForm(formId) {
-        $(':input','#' + formId)
-          .not(':button, :submit, :reset, :hidden')
-          .val('')
-          .removeAttr('checked')
-          .removeAttr('selected');
-    }
-
-    /**
-     * @return function to load tweets which takes a boolean argument: reload
-     */
-    function getLoadTweets() {
-        var tweetsUrl = '/api/tweets/';
-
-        return function (reload) {
-            if (reload) tweetsUrl = '/api/tweets/';
-            $.ajax({
-                'url': tweetsUrl,
-                'method': 'GET',
-                'success': function (data) {
-                    tweetsUrl = data.next;
-                    var tweets = data.results;
-                    // toggle load more link
-                    if (!tweetsUrl || tweets.length == data.count) $('#loadMore').css('display', 'none');
-                    else $('#loadMore').css('display', '');
-
-                    clearForm('tweet-form');
-                    if (reload) $('#tweet-container').empty();
-                    $.each(tweets, function (key, tweet) {
-                        var tweetContent = tweet.content;
-                        var tweetUser = tweet.user;
-                        $('#tweet-container').append(
-                            "<div class=\"media\">" +
-                                "<div class=\"media-body\">" +
-                                    tweetContent + "<br />" +
-                                    "via " + "<a href='" + tweetUser.url + "'>" + tweetUser.username + "</a> | " + tweet.time_since + " ago" +
-                                    "<a class='btn btn-default' href='" + tweet.url + "'>View</a>" + "<br />" +
-                                "</div>" +
-                            "</div>" +
-                            "<hr />"
-                        );
-                    });
-                },
-                'error': function (data) {
-                    console.log('error:');
-                    console.log(data);
-                }
-            });
-        };
-    }
-
     /**
      * change color and the count number of how many chars left
      * color: chars left < 0 -> red
@@ -131,7 +76,7 @@
             setUpTweetCharsLeft(content, charCountLeft);
         });
 
-        var loadTweets = getLoadTweets();
+        var loadTweets = getLoadTweets('{% url "tweet-api:list" %}');
         tweetForm.submit(function (event) {
             event.preventDefault();
             if (charCountLeft < 0) {
@@ -153,11 +98,20 @@
             });
         });
 
-        loadTweets(true);
+        {% if request.GET.q %}
+            loadTweets(true, '{{ request.GET.q }}');
+        {% else %}
+            loadTweets(true);
+        {% endif %}
 
         $('#loadMore').click(function (event) {
             event.preventDefault();
             loadTweets(false);
+        });
+
+        // if not logged in, user will see the toggles
+        $('#follow-toggle').click(function () {
+            window.location.href = '{% url 'login' %}';
         });
     });
 </script>

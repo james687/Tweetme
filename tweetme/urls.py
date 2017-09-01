@@ -19,13 +19,12 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
-from tweets.views import TweetList
-
 from users.views import UserRegisterView
+from tweets.views import TweetListSkeleton
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', TweetList.as_view(), name='home'),
+    url(r'^$', TweetListSkeleton.as_view(), name='home'),
     url(r'^tweets/', include('tweets.urls', namespace='tweets')),
     url(r'^api/tweets/', include('tweets.api.urls', namespace='tweet-api')),
     url(r'^api/users/', include('users.api.urls', namespace='user-api')),

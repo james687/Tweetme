@@ -1,5 +1,6 @@
 from pprint import pprint
 
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 from rest_framework import permissions
 from rest_framework.generics import ListAPIView, CreateAPIView
@@ -15,10 +16,12 @@ class TweetListAPIView(ListAPIView):
     pagination_class = StandardResultsPagination
 
     def get_queryset(self):
-        qs = Tweet.objects.all().order_by('-created_at')
+        qs = Tweet.objects.all()
         query = self.request.GET.get('q')
         if query:
-            qs = qs.filter(Q(content__icontains=query) | Q(user__username__icontains=query))
+            qs = qs.filter(Q(content__icontains=query) | Q(user__username__icontains=query)).all()
+        elif self.kwargs.get('username'):
+            qs = qs.filter(user__username__iexact=self.kwargs.get('username'))
         return qs
 
 
