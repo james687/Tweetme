@@ -90,6 +90,10 @@
                 'success': function (data) {
                     loadTweets(true);
                     $('#tweetCharsLeft').text(tweetCharsLimit);  // reset it
+
+                    // add tweet count
+                    var originalTweetCount = Number($('#tweet-count').text());
+                    $('#tweet-count').text(originalTweetCount + 1);
                 },
                 'error': function (data) {
                     console.log('error:');

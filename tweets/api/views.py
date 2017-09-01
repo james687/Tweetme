@@ -19,9 +19,17 @@ class TweetListAPIView(ListAPIView):
         qs = Tweet.objects.all()
         query = self.request.GET.get('q')
         if query:
-            qs = qs.filter(Q(content__icontains=query) | Q(user__username__icontains=query)).all()
-        elif self.kwargs.get('username'):
-            qs = qs.filter(user__username__iexact=self.kwargs.get('username'))
+            return qs.filter(Q(content__icontains=query) | Q(user__username__icontains=query)).all()
+        if self.kwargs.get('username'):  # tweets of the specified user
+            return qs.filter(user__username__iexact=self.kwargs.get('username'))
+
+        # tweets for home page
+        current_user = self.request.user
+        if current_user.is_authenticated():
+            user_ids = [current_user.id]
+            user_ids += current_user.profile.following.all()
+            qs = qs.filter(user_id__in=user_ids).all()
+
         return qs
 
 

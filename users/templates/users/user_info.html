@@ -10,7 +10,7 @@
         {% if is_following %}unfollow{% else %}follow{% endif %}
     </button>
 {% endif %}
-<p><span class="info">Tweets: {{ user.tweet_set.count }}</span></p>
+<p><span class="info">Tweets: <span id="tweet-count">{{ user.tweet_set.count }}</span></span></p>
 <p><span class="info">Followers: <span class="followed-by-count">{{ user.followed_by.count }}</span></span></p>
 <p><span class="info">Following: {{ user.profile.following.count }}</span></p>
 {% url 'home' as home_url %}
