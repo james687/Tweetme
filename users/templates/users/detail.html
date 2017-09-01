@@ -25,10 +25,10 @@ $(document).ready(function () {
     });
 
     {% if object == request.user %}
-    $('#follow-toggle').hide();
-    return;
+        $('.follow-toggle').hide();
+        return;
     {% endif %}
-    $('#follow-toggle').click(function () {
+    $('.follow-toggle').click(function () {
         {% if request.user.is_authenticated %}
             toggleFollow('{% url "user-api:follow-toggle" username=object.username %}');
         {% else %}

@@ -13,6 +13,7 @@
     <span id="tweet-content" style="display: none;">{{ object.content }}</span>
 {% endblock %}
 {% block script %}
+{{ block.super }}
 <script>
     $(document).ready(function () {
         var tweetContent = $('#tweet-content').text().replace(/(?:\r\n|\r|\n)/g, '<br />'); // replace all "\n"s with "<br />"s

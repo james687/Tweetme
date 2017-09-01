@@ -89,8 +89,9 @@ function toggleFollow(requestUrl) {
     $.ajax({
         'url': requestUrl,
         'success': function (data) {
-            if (data.is_following) $('#follow-toggle').text('unfollow');
-            else $('#follow-toggle').text('follow');
+            var toggle = $('.follow-toggle[username=' + data.username + ']');
+            if (data.is_following) toggle.text('unfollow');
+            else toggle.text('follow');
 
             // refresh followed-by div
             $('#followed-by').empty();
@@ -98,11 +99,17 @@ function toggleFollow(requestUrl) {
                 $('#followed-by').append('<a class="btn btn-link" href="' + user.url + '">' + user.username + '</a><br />');
             });
             if ($('#followed-by').children().length == 0) {
-                $('#followed-by').append('<h4>Not followed by any users.</h4>');
+                $('#followed-by').append('<span class="info">Not followed by any users.</span>');
             }
 
             // update followed-by count
-            $('.followed-by-count').text(data.followed_by.length);
+            $('.followed-by-count[username=' + data.username + ']').text(data.followed_by.length);
+
+            // update following count
+            var followingCountSpan = $('.following-count[username=' + currentUserName + ']');
+            var followingCount = Number(followingCountSpan.text());
+            if (data.is_following) followingCountSpan.text(followingCount + 1);
+            else followingCountSpan.text(followingCount - 1);
         },
         'error': function (data) {
             console.log('error:');

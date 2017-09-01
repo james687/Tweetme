@@ -1,10 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
-from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, UpdateView, DeleteView, TemplateView
 
+from users.models import UserProfile
 from .mixins import FormUserNeededMixin, UserOwnerMixin
 from .forms import TweetModelForm
 from .models import Tweet
@@ -20,10 +20,12 @@ class TweetListSkeleton(TemplateView):
         context = super(TweetListSkeleton, self).get_context_data(**kwargs)
         context['create_form'] = TweetModelForm()
         context['create_url'] = reverse_lazy('tweets:create')
-        if not self.request.user.is_authenticated():
-            context['users'] = get_user_model().objects.all() \
-                .annotate(tweet_count=Count('tweet')) \
-                .order_by('-tweet_count')
+        context['users_data'] = [{
+            'user': user,
+            'is_following': UserProfile.custom_objects.is_following(self.request.user, user),
+        } for user in get_user_model().objects
+            .annotate(tweet_count=Count('tweet'))
+            .order_by('-tweet_count')]
         return context
 
 

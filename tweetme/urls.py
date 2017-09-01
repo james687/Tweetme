@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^api/users/', include('users.api.urls', namespace='user-api')),
     url(r'^.well-known/', include('letsencrypt.urls')),
     url(r'^register/$', UserRegisterView.as_view(), name='register'),
+    url(r'^all/$', TweetListSkeleton.as_view(), name='all'),
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^', include('users.urls', namespace='users')),
 ]

@@ -17,6 +17,7 @@
         {% if request.user.is_authenticated %}
           <li><a href="{% url 'users:detail' username=request.user.username %}">{{ request.user }}</a></li>
           <li><a href="{% url 'logout' %}">Logout</a></li>
+          <li><a href="{% url 'all' %}">See All</a></li>
         {% else %}
           <li><a href="{% url 'register' %}">Register</a></li>
           <li><a href="{% url 'login' %}">Login</a></li>

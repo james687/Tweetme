@@ -2,6 +2,7 @@ from pprint import pprint
 
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.urls import reverse_lazy
 from rest_framework import permissions
 from rest_framework.generics import ListAPIView, CreateAPIView
 
@@ -17,13 +18,14 @@ class TweetListAPIView(ListAPIView):
 
     def get_queryset(self):
         qs = Tweet.objects.all()
+
         query = self.request.GET.get('q')
         if query:
             return qs.filter(Q(content__icontains=query) | Q(user__username__icontains=query)).all()
         if self.kwargs.get('username'):  # tweets of the specified user
             return qs.filter(user__username__iexact=self.kwargs.get('username'))
 
-        # tweets for home page
+        # tweets for user home page
         current_user = self.request.user
         if current_user.is_authenticated():
             user_ids = [current_user.id]
@@ -31,6 +33,12 @@ class TweetListAPIView(ListAPIView):
             qs = qs.filter(user_id__in=user_ids).all()
 
         return qs
+
+
+class TweetListAllAPIView(ListAPIView):
+    serializer_class = TweetModelSerializer
+    pagination_class = StandardResultsPagination
+    queryset = Tweet.objects.all()
 
 
 class TweetCreateAPIView(CreateAPIView):

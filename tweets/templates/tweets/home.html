@@ -3,19 +3,22 @@
 {% block content %}
 <div class="row">
     <div class="col-sm-3">
-        {% if request.user.is_authenticated %}
-            {% include 'users/user_info.html' with user=request.user showFollowToggle=False %}
-        {% else %}
+        {% url 'all' as see_all_url %}
+        {% if not request.user.is_authenticated or request.path == see_all_url %}
             <h3><span class="label label-default">Who to follow</span></h3>
-            {% for user in users %}
-                {% include 'users/user_info.html' with user=user showFollowToggle=True %}
+            {% for user_data in users_data %}
+                {% include 'users/user_info.html' with user=user_data.user is_following=user_data.is_following showFollowToggle=True %}
             {% endfor %}
+        {% else %}
+            {% include 'users/user_info.html' with user=request.user showFollowToggle=False %}
         {% endif %}
     </div>
     <div class="col-sm-9">
         {% if not request.GET.q %}
             <div class="row">
-                {% include 'tweet_form.html' with form=create_form action_url=create_url btn_title='Tweet' form_id='tweet-form' %}
+                <div class="col-sm-8 col-sm-offset-2">
+                    {% include 'tweet_form.html' with form=create_form action_url=create_url btn_title='Tweet' form_id='tweet-form' %}
+                </div>
             </div>
             <hr />
         {% endif %}
@@ -37,6 +40,9 @@
     }
     .red-color {
         color: red;
+    }
+    #tweet-form {
+        margin: 15px;
     }
 </style>
 <script>
@@ -68,7 +74,7 @@
 
         var tweetCharsLimit = 140;
         var charCountLeft = 140;
-        tweetForm.append("<span id='tweetCharsLeft'>" + charCountLeft + "</span><span> Left</span>");
+        tweetForm.append("<span class='pull-right' style='margin: 10px;'><span id='tweetCharsLeft'>" + charCountLeft + "</span> Left</span>");
         var textArea = tweetForm.find('textarea')[0];
         tweetForm.keyup(function (event) {
             var content = $(textArea).val();
@@ -76,9 +82,23 @@
             setUpTweetCharsLeft(content, charCountLeft);
         });
 
-        var loadTweets = getLoadTweets('{% url "tweet-api:list" %}');
+        // load tweets
+        var url;
+        if ('{{ request.path }}' == '{% url "all" %}') {
+            url = '{% url "tweet-api:all" %}';
+        } else {
+            url = '{% url "tweet-api:list" %}';
+        }
+        var loadTweets = getLoadTweets(url);
+
+        // tweet creation
         tweetForm.submit(function (event) {
             event.preventDefault();
+            {% if not request.user.is_authenticated %}
+                window.location.href = '{% url 'login' %}';
+                return;
+            {% endif %}
+
             if (charCountLeft < 0) {
                 // TODO show error message of tweet too long
                 return;
@@ -113,9 +133,12 @@
             loadTweets(false);
         });
 
-        // if not logged in, user will see the toggles
-        $('#follow-toggle').click(function () {
-            window.location.href = '{% url 'login' %}';
+        $('.follow-toggle').click(function () {
+            {% if request.user.is_authenticated %}
+                toggleFollow($(this).attr('url'));
+            {% else %}
+                window.location.href = '{% url 'login' %}';
+            {% endif %}
         });
     });
 </script>

@@ -16,6 +16,8 @@ class UserProfileManager(models.Manager):
         return is_following
 
     def is_following(self, user, user_for_following):
+        if not user.is_authenticated():
+            return False
         profile = self.get(user=user)
         return user_for_following in profile.following.all()
 

@@ -17,6 +17,7 @@ class FollowToggleAPIView(APIView):
         is_following = UserProfile.custom_objects.toggle_follow(self.request.user, user_to_toggle)
         followed_by_ids = user_to_toggle.followed_by.values_list('user_id', flat=True)
         return Response({
+            'username': user_to_toggle.username,
             'is_following': is_following,
             'followed_by': [{
                 'username': username,
