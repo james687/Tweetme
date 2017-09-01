@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, FormView
 
+from .models import UserProfile
 from .forms import UserRegisterForm
 
 User = get_user_model()
@@ -14,6 +15,11 @@ class UserDetailView(DetailView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(User, username__iexact=self.kwargs.get('username'))
+
+    def get_context_data(self, **kwargs):
+        context = super(UserDetailView, self).get_context_data(**kwargs)
+        context['is_following'] = UserProfile.custom_objects.is_following(self.request.user, self.get_object())
+        return context
 
 
 class UserRegisterView(FormView):

@@ -4,20 +4,25 @@
     <div class="row">
         <div class="col-sm-3">
             <h1>{{ object.username }}</h1>
-            <p>Followers: {{ object.followed_by.count }}</p>
-            <p>Following: {{ object.profile.following.count|default:0 }}</p>
+            <p>Followers: <span class="followed-by-count">{{ object.followed_by.count }}</span></p>
+            <p>Following: {{ object.profile.following.count }}</p>
+            <button id="follow-toggle" class="btn btn-info">
+                {% if is_following %}unfollow{% else %}follow{% endif %}
+            </button>
         </div>
         <div class="col-sm-9">
             <h1>Tweets</h1>
             {% include 'tweet_list.html' with tweets=object.tweet_set.all %}
-            <h1>Followed By <small>{{ object.followed_by.count }}</small></h1>
-            {% for user_profile in object.followed_by.all %}
-                <a href="{{ user_profile.get_absolute_url }}">{{ user_profile.user.username }}</a><br />
-            {% empty %}
-                <h4>Not followed by any users.</h4>
-            {% endfor %}
+            <h1>Followed By <small><span class="followed-by-count">{{ object.followed_by.count }}</span></small></h1>
+            <div id="followed-by">
+                {% for user_profile in object.followed_by.all %}
+                    <a class="btn btn-link" href="{{ user_profile.get_absolute_url }}">{{ user_profile.user.username }}</a><br />
+                {% empty %}
+                    <h4>Not followed by any users.</h4>
+                {% endfor %}
+            </div>
             <hr />
-            <h1>Following <small>{{ object.profile.following.count|default:0 }}</small></h1>
+            <h1>Following <small>{{ object.profile.following.count }}</small></h1>
             {% for user in object.profile.following.all %}
                 <a href="{{ user.profile.get_absolute_url }}">{{ user.username }}</a><br />
             {% empty %}
@@ -26,4 +31,39 @@
             <hr />
         </div>
     </div>
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function () {
+        {% if object == request.user %}
+            $('#follow-toggle').hide();
+            return;
+        {% endif %}
+        $('#follow-toggle').click(function () {
+            $.ajax({
+                'url': '{% url "user-api:follow-toggle" username=object.username %}',
+                'success': function (data) {
+                    if (data.is_following) $('#follow-toggle').text('unfollow');
+                    else $('#follow-toggle').text('follow');
+
+                    // refresh followed-by div
+                    $('#followed-by').empty();
+                    $.each(data.followed_by, function (index, user) {
+                        $('#followed-by').append('<a class="btn btn-link" href="' + user.url + '">' + user.username + '</a><br />');
+                    });
+                    if ($('#followed-by').children().length == 0) {
+                        $('#followed-by').append('<h4>Not followed by any users.</h4>');
+                    }
+
+                    // update followed-by count
+                    $('.followed-by-count').text(data.followed_by.length);
+                },
+                'error': function (data) {
+                    console.log('error:');
+                    console.log(data);
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}
