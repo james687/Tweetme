@@ -7,7 +7,7 @@
         {% if not request.user.is_authenticated or request.path == see_all_url %}
             <h3><span class="label label-default">Who to follow</span></h3>
             {% for user_data in users_data %}
-                {% include 'users/user_info.html' with user=user_data.user is_following=user_data.is_following showFollowToggle=True %}
+                {% include 'users/user_info.html' with user=user_data.user showFollowToggle=True is_following=user_data.is_following %}
             {% endfor %}
         {% else %}
             {% include 'users/user_info.html' with user=request.user showFollowToggle=False %}
@@ -100,7 +100,7 @@
             {% endif %}
 
             if (charCountLeft < 0) {
-                // TODO show error message of tweet too long
+                // TOREFINE show error message of tweet too long
                 return;
             }
             $.ajax({

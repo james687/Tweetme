@@ -33,6 +33,11 @@ class TweetDetail(DetailView):
     model = Tweet
     template_name = "tweets/detail.html"
 
+    def get_context_data(self, **kwargs):
+        context = super(TweetDetail, self).get_context_data(**kwargs)
+        context['is_following'] = UserProfile.custom_objects.is_following(self.request.user, self.get_object().user)
+        return context
+
 
 class TweetCreate(FormUserNeededMixin, CreateView):
     form_class = TweetModelForm

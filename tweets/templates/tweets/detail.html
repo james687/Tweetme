@@ -3,7 +3,7 @@
 {% block content %}
     <div class="row">
         <div class="col-sm-3">
-            {% include 'users/user_info.html' with user=object.user %}
+            {% include 'users/user_info.html' with user=object.user showFollowToggle=True is_following=is_following %}
         </div>
         <div class="col-sm-9">
             <p id="tweet-display"></p>
@@ -18,6 +18,14 @@
     $(document).ready(function () {
         var tweetContent = $('#tweet-content').text().replace(/(?:\r\n|\r|\n)/g, '<br />'); // replace all "\n"s with "<br />"s
         $('#tweet-display').append(tweetContent);
+
+        $('.follow-toggle').click(function () {
+            {% if request.user.is_authenticated %}
+                toggleFollow('{% url "user-api:follow-toggle" username=object.user.username %}');
+            {% else %}
+                window.location.href = '{% url 'login' %}';
+            {% endif %}
+        });
     });
 </script>
 {% endblock %}
