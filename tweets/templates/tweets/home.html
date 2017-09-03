@@ -73,10 +73,9 @@
         var tweetForm = $('#tweet-form');
 
         var tweetCharsLimit = 140;
-        var charCountLeft = 140;
-        tweetForm.append("<span class='pull-right' style='margin: 10px;'><span id='tweetCharsLeft'>" + charCountLeft + "</span> Left</span>");
-        var textArea = tweetForm.find('textarea')[0];
-        tweetForm.keyup(function (event) {
+        var charCountLeft;
+        var textArea = $(tweetForm.find('textarea')[0]);
+        textArea.keyup(function (event) {
             var content = $(textArea).val();
             charCountLeft = tweetCharsLimit - content.length;
             setUpTweetCharsLeft(content, charCountLeft);
@@ -139,6 +138,20 @@
             {% else %}
                 window.location.href = '{% url 'login' %}';
             {% endif %}
+        });
+
+        // cmd + enter submission feature
+        var cmdPressed;
+        textArea.keydown(function (event) {
+            if (event.which == 91 || event.which == 93) {  // key code 91 and 93: left and right "cmd"
+                cmdPressed = true;
+                setTimeout(function () {
+                    cmdPressed = false;
+                }, 200);
+            }
+            if (cmdPressed && event.which == 13) {  // key code 13: "enter"
+                tweetForm.submit();
+            }
         });
     });
 </script>

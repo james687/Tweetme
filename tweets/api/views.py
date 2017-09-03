@@ -46,5 +46,4 @@ class TweetCreateAPIView(CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        pprint(vars(serializer))
         serializer.save(user=self.request.user)
