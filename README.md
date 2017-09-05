@@ -7,7 +7,7 @@ It's an ongoing practice project to get familiar with Python and Django which is
 
 ## Implemented
 - Login/Register
-- Create tweets
+- Create/Edit/Delete tweets
 - Search by tweet content or author name
 - Follow/Unfollow
 - User/Tweet detail page
