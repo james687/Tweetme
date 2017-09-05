@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-{% block title %}Delete Tweet{% endblock %}
-{% block content %}
-    <form action="" method="post">{% csrf_token %}
-        <p>Are you sure about deleting the tweet below?</p>
-        <p>{{ object }}</p>
-        <input type="submit" value="delete" />
-    </form>
-{% endblock %}

@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.urls import reverse_lazy
 from rest_framework import permissions
-from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, DestroyAPIView
 
 from tweets.models import Tweet
 
@@ -47,3 +47,10 @@ class TweetCreateAPIView(CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class TweetDestroyAPIView(DestroyAPIView):
+    queryset = Tweet.objects.all()
+
+    def perform_destroy(self, instance):
+        instance.delete()

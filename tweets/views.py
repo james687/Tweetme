@@ -1,8 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
-from django.urls import reverse_lazy
-from django.views.generic import DetailView, UpdateView, DeleteView, TemplateView
+from django.views.generic import DetailView, UpdateView, TemplateView
 
 from users.models import UserProfile
 from .mixins import UserOwnerMixin
@@ -42,10 +41,3 @@ class TweetUpdate(LoginRequiredMixin, UserOwnerMixin, UpdateView):
     model = Tweet
     form_class = TweetModelForm
     template_name = "tweets/update.html"
-
-
-class TweetDelete(LoginRequiredMixin, DeleteView):
-    model = Tweet
-    template_name = 'tweets/delete_confirm.html'
-    success_url = reverse_lazy('home')
-    # success_url = '/tweets/' # this will do the same thing as above
