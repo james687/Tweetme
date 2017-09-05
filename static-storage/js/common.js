@@ -117,3 +117,54 @@ function toggleFollow(requestUrl) {
         }
     });
 }
+
+/**
+ * change color and the count number of how many chars left
+ * color: chars left < 0 -> red
+ *                   = 0 -> gray
+ *                   > 0 -> black(original color)
+ */
+function setUpTweetCharsLeft(textArea) {
+    var content = textArea.val();
+    var charCountLeft = tweetCharsLimit - content.length;
+    var charsLeftSpan = $('#tweetCharsLeft');
+    charsLeftSpan.text(charCountLeft);
+    if (charCountLeft == 0) {
+        charsLeftSpan.removeClass('red-color');
+        charsLeftSpan.addClass('grey-color');
+    } else if (charCountLeft < 0) {
+        charsLeftSpan.removeClass('grey-color');
+        charsLeftSpan.addClass('red-color');
+    } else {
+        charsLeftSpan.removeClass('grey-color');
+        charsLeftSpan.removeClass('red-color');
+    }
+}
+
+/**
+ * for tweet chars left and cmd + enter submission
+ */
+function initTweetForm() {
+    // tweet chars left
+    var tweetForm = $('#tweet-form');
+    var textArea = $(tweetForm.find('textarea')[0]);
+    setUpTweetCharsLeft(textArea);
+    textArea.keyup(function (event) {
+        setUpTweetCharsLeft(textArea);
+    });
+
+    // cmd + enter submission feature
+    var cmdPressed;
+    textArea.keydown(function (event) {
+        if (event.which == 91 || event.which == 93) {  // key code 91 and 93: left and right "cmd"
+            cmdPressed = true;
+            setTimeout(function () {
+                cmdPressed = false;
+            }, 200);
+        }
+        if (cmdPressed && event.which == 13) {  // key code 13: "enter"
+            tweetForm.submit();
+        }
+    });
+}
+

@@ -8,6 +8,9 @@
         <div class="col-sm-9">
             <p id="tweet-display"></p>
             <p>{{ object.created_at | timesince }} ago</p>
+            {% if request.user == object.user %}
+                <a class="btn btn-default" href="{% url 'tweets:update' pk=object.id %}">Edit</a>
+            {% endif %}
         </div>
     </div>
     <span id="tweet-content" style="display: none;">{{ object.content }}</span>
@@ -16,6 +19,7 @@
 {{ block.super }}
 <script>
     $(document).ready(function () {
+        // use `$('#tweet-content').text()` instead of outputting object.content directly to prevent syntax error // CURIOUS why syntax error happened?
         var tweetContent = $('#tweet-content').text().replace(/(?:\r\n|\r|\n)/g, '<br />'); // replace all "\n"s with "<br />"s
         $('#tweet-display').append(tweetContent);
 

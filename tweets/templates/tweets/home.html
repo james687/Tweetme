@@ -17,7 +17,7 @@
         {% if not request.GET.q %}
             <div class="row">
                 <div class="col-sm-8 col-sm-offset-2">
-                    {% include 'tweet_form.html' with form=create_form action_url=create_url btn_title='Tweet' form_id='tweet-form' %}
+                    {% include 'tweet_form.html' with form=create_form btn_title='Tweet' %}
                 </div>
             </div>
             <hr />
@@ -32,54 +32,13 @@
 {% block script %}
 {{ block.super }}
 <style>
-    #tweetCharsLeft {
-        margin-left: 10px;
-    }
-    .grey-color {
-        color: darkgray;
-    }
-    .red-color {
-        color: red;
-    }
     #tweet-form {
         margin: 15px;
     }
 </style>
 <script>
-    /**
-     * change color and the count number of how many chars left
-     * color: chars left < 0 -> red
-     *                   = 0 -> gray
-     *                   > 0 -> black(original color)
-     * @param content - tweet content
-     * @param charCountLeft
-     */
-    function setUpTweetCharsLeft(content, charCountLeft) {
-        var charsLeftSpan = $('#tweetCharsLeft');
-        charsLeftSpan.text(charCountLeft);
-        if (charCountLeft == 0) {
-            charsLeftSpan.removeClass('red-color');
-            charsLeftSpan.addClass('grey-color');
-        } else if (charCountLeft < 0) {
-            charsLeftSpan.removeClass('grey-color');
-            charsLeftSpan.addClass('red-color');
-        } else {
-            charsLeftSpan.removeClass('grey-color');
-            charsLeftSpan.removeClass('red-color');
-        }
-    }
-
     $(document).ready(function() {
-        var tweetForm = $('#tweet-form');
-
-        var tweetCharsLimit = 140;
-        var charCountLeft;
-        var textArea = $(tweetForm.find('textarea')[0]);
-        textArea.keyup(function (event) {
-            var content = $(textArea).val();
-            charCountLeft = tweetCharsLimit - content.length;
-            setUpTweetCharsLeft(content, charCountLeft);
-        });
+        initTweetForm();
 
         // load tweets
         var url;
@@ -89,16 +48,26 @@
             url = '{% url "tweet-api:list" %}';
         }
         var loadTweets = getLoadTweets(url);
+        {% if request.GET.q %}
+            loadTweets(true, '{{ request.GET.q }}');
+        {% else %}
+            loadTweets(true);
+        {% endif %}
+        $('#loadMore').click(function (event) {
+            event.preventDefault();
+            loadTweets(false);
+        });
 
         // tweet creation
-        tweetForm.submit(function (event) {
+        $('#tweet-form').submit(function (event) {
             event.preventDefault();
             {% if not request.user.is_authenticated %}
                 window.location.href = '{% url 'login' %}';
                 return;
             {% endif %}
 
-            if (charCountLeft < 0) {
+            var tweetCharsLeft = $('#tweetCharsLeft');
+            if (Number(tweetCharsLeft.text()) < 0) {
                 // TOREFINE show error message of tweet too long
                 return;
             }
@@ -108,7 +77,7 @@
                 'data': $(this).serialize(),
                 'success': function (data) {
                     loadTweets(true);
-                    $('#tweetCharsLeft').text(tweetCharsLimit);  // reset it
+                    tweetCharsLeft.text(tweetCharsLimit);  // reset it
 
                     // add tweet count
                     var originalTweetCount = Number($('#tweet-count').text());
@@ -121,37 +90,12 @@
             });
         });
 
-        {% if request.GET.q %}
-            loadTweets(true, '{{ request.GET.q }}');
-        {% else %}
-            loadTweets(true);
-        {% endif %}
-
-        $('#loadMore').click(function (event) {
-            event.preventDefault();
-            loadTweets(false);
-        });
-
         $('.follow-toggle').click(function () {
             {% if request.user.is_authenticated %}
                 toggleFollow($(this).attr('url'));
             {% else %}
                 window.location.href = '{% url 'login' %}';
             {% endif %}
-        });
-
-        // cmd + enter submission feature
-        var cmdPressed;
-        textArea.keydown(function (event) {
-            if (event.which == 91 || event.which == 93) {  // key code 91 and 93: left and right "cmd"
-                cmdPressed = true;
-                setTimeout(function () {
-                    cmdPressed = false;
-                }, 200);
-            }
-            if (cmdPressed && event.which == 13) {  // key code 13: "enter"
-                tweetForm.submit();
-            }
         });
     });
 </script>

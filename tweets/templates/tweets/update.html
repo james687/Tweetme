@@ -7,3 +7,11 @@
         </div>
     </div>
 {% endblock %}
+{% block script %}
+{{ block.super }}
+<script>
+    $(document).ready(function () {
+        initTweetForm();
+    });
+</script>
+{% endblock %}

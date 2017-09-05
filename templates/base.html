@@ -41,9 +41,18 @@
               .follow-toggle {
                   margin: 15px 0px;
               }
+              .grey-color {
+                  color: darkgray;
+              }
+              .red-color {
+                  color: red;
+              }
           </style>
           <script src="{% static 'js/common.js' %}"></script>
-          <script>var currentUserName = '{{ request.user.username }}';</script>
+          <script>
+              var currentUserName = '{{ request.user.username }}';
+              var tweetCharsLimit = 140;
+          </script>
       {% endblock %}
 
       <!-- Include all compiled plugins (below), or include individual files as needed -->
