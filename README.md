@@ -13,3 +13,4 @@ It's an ongoing practice project to get familiar with Python and Django which is
 - User/Tweet detail page
 - Browse your tweets and tweets from your following on your wall
 - Browse all tweets and all users on one page
+- Redirect all HTTP requests to HTTPS
