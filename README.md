@@ -1,9 +1,9 @@
 # Tweetme
 A Twitter-like website built with Django.
 
-hosted [on Heroku](https://tweetme-20.herokuapp.com/)
+hosted [on DigitalOcean](https://tweetme.jamesho.website/) with Dokku
 
-It's a practice project to get familiar with Python and Django which is mostly based on [this Udemy course](https://www.udemy.com/tweetme-django).
+It's a practice project which is mostly based on [this Udemy course](https://www.udemy.com/tweetme-django).
 
 ## Implemented
 - Login/Register
