@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.contrib.auth import get_user_model
 
@@ -18,7 +20,9 @@ class UserRegisterForm(forms.Form):
         return password_confirm
 
     def clean_username(self):
-        username = self.cleaned_data.get('username')
+        username = self.cleaned_data.get('username').strip()
+        if re.search(r'\s+', username):
+            raise forms.ValidationError("White space is not allowed in username.")
         if User.objects.filter(username__iexact=username).exists():
             raise forms.ValidationError('This user name has already been taken!')
 
