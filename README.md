@@ -1,7 +1,7 @@
 # Tweetme
 A Twitter-like website built with Django.
 
-hosted [on DigitalOcean](https://tweetme.jamesho.website/) with Dokku
+Previously hosted on DigitalOcean with Dokku
 
 It's a practice project which is mostly based on [this Udemy course](https://www.udemy.com/tweetme-django).
 
