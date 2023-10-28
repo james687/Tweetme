@@ -1,5 +1,4 @@
-import os
-from .base import PROJECT_ROOT
+from .base import *
 
 SECRET_KEY = ')_3sp#ux^9bas4!u*krx*m@f_wwf7*u^t1_ivsl@x$5sew0rp*'
 

@@ -1,7 +1,5 @@
 # Tweetme
-A Twitter-like website built with Django.
-
-Previously hosted on DigitalOcean with Dokku
+[A Twitter-like website](https://tweetme.jamesho.website) built with Django and deployed with GCP Cloud Run.
 
 It's a practice project which is mostly based on [this Udemy course](https://www.udemy.com/tweetme-django).
 
